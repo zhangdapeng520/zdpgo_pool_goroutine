@@ -3,32 +3,19 @@ package zdpgo_pool_goroutine
 import (
 	"errors"
 	"log"
-	"math"
 	"os"
 	"runtime"
 	"time"
 )
 
 const (
-	// DefaultAntsPoolSize is the default capacity for a default goroutine pool.
-	DefaultAntsPoolSize = math.MaxInt32
-
-	// DefaultCleanIntervalTime is the interval time to clean up goroutines.
-	DefaultCleanIntervalTime = time.Second
-)
-
-const (
-	// OPENED represents that the pool is opened.
-	OPENED = iota
-
-	// CLOSED represents that the pool is closed.
-	CLOSED
+	defaultGoroutinePoolSize = 333333          // 默认的协程池数量
+	DefaultCleanIntervalTime = time.Second * 3 // 默认的清除间隔时间
+	OPENED                   = iota            // 连接池开启状态
+	CLOSED                                     // 连接池关闭状态
 )
 
 var (
-	//
-	//--------------------------Error types for the Ants API------------------------------
-
 	// ErrLackPoolFunc will be returned when invokers don't provide function for pool.
 	ErrLackPoolFunc = errors.New("must provide function for pool")
 
@@ -46,8 +33,6 @@ var (
 
 	// ErrTimeout will be returned after the operations timed out.
 	ErrTimeout = errors.New("operation timed out")
-
-	//---------------------------------------------------------------------------
 
 	// workerChanCap determines whether the channel of a worker should be a buffered channel
 	// to get the best performance. Inspired by fasthttp at
@@ -67,42 +52,42 @@ var (
 
 	defaultLogger = Logger(log.New(os.Stderr, "", log.LstdFlags))
 
-	// Init an instance pool when importing ants.
-	defaultAntsPool, _ = NewPool(DefaultAntsPoolSize)
+	// 当此库被导入的时候，会初始化一个Goroutine协程池
+	defaultGoroutinePool, _ = NewPool(defaultGoroutinePoolSize)
 )
 
-// Logger is used for logging formatted messages.
+// Logger 用于日志格式化
 type Logger interface {
-	// Printf must have the same semantics as log.Printf.
+	// Printf 必须和 log.Printf 具有相同的实现
 	Printf(format string, args ...interface{})
 }
 
-// Submit submits a task to pool.
+// Submit 提交任务到连接池
 func Submit(task func()) error {
-	return defaultAntsPool.Submit(task)
+	return defaultGoroutinePool.Submit(task)
 }
 
-// Running returns the number of the currently running goroutines.
+// Running 返回当前整型运行的Goroutine的数量
 func Running() int {
-	return defaultAntsPool.Running()
+	return defaultGoroutinePool.Running()
 }
 
-// Cap returns the capacity of this default pool.
+// Cap 返回默认连接池的容量
 func Cap() int {
-	return defaultAntsPool.Cap()
+	return defaultGoroutinePool.Cap()
 }
 
-// Free returns the available goroutines to work.
+// Free 获取可用的Goroutine数量
 func Free() int {
-	return defaultAntsPool.Free()
+	return defaultGoroutinePool.Free()
 }
 
-// Release Closes the default pool.
+// Release 关闭默认的连接池
 func Release() {
-	defaultAntsPool.Release()
+	defaultGoroutinePool.Release()
 }
 
-// Reboot reboots the default pool.
+// Reboot 重启默认的连接池
 func Reboot() {
-	defaultAntsPool.Reboot()
+	defaultGoroutinePool.Reboot()
 }

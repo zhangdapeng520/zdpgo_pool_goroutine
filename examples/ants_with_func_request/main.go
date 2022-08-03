@@ -8,14 +8,6 @@ import (
 	"time"
 )
 
-/*
-@Time : 2022/6/20 10:16
-@Author : 张大鹏
-@File : main.go
-@Software: Goland2021.3.1
-@Description:
-*/
-
 func myFunc() {
 	seconds := rand.Intn(30)
 	fmt.Println(fmt.Sprintf("模拟一次请求，需要%d秒钟", seconds))

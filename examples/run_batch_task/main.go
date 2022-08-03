@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/zhangdapeng520/zdpgo_pool_goroutine"
 	"math/rand"
-	"sync"
 	"time"
 )
 
@@ -15,20 +14,14 @@ func demoFunc() {
 }
 
 func main() {
-	// 释放ants的默认协程池
-	defer zdpgo_pool_goroutine.Release()
-	var wg sync.WaitGroup
-
-	// 任务函数
-	syncCalculateSum := func() {
-		demoFunc()
-		wg.Done()
-	}
+	// 批量生成任务
+	var tasks []func()
 	for i := 0; i < 100000; i++ {
-		wg.Add(1)
-		_ = zdpgo_pool_goroutine.Submit(syncCalculateSum) // 提交任务到默认协程池
+		tasks = append(tasks, demoFunc)
 	}
-	wg.Wait()
+
+	// 批量执行任务
+	zdpgo_pool_goroutine.RunBatchTask(tasks)
 
 	// 查看输出
 	fmt.Printf("运行中的Gotouine数量: %d\n", zdpgo_pool_goroutine.Running())
