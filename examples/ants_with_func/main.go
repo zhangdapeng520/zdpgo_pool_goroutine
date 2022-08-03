@@ -7,14 +7,6 @@ import (
 	"sync/atomic"
 )
 
-/*
-@Time : 2022/6/20 10:16
-@Author : 张大鹏
-@File : main.go
-@Software: Goland2021.3.1
-@Description:
-*/
-
 var sum int32 // 总和
 
 func myFunc(i interface{}) {

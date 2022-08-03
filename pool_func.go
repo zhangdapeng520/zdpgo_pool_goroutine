@@ -2,7 +2,6 @@ package zdpgo_pool_goroutine
 
 import (
 	"context"
-	"github.com/zhangdapeng520/zdpgo_pool_goroutine/internal"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -124,8 +123,9 @@ func NewPoolWithFunc(size int, pf func(interface{}), options ...Option) (*PoolWi
 	p := &PoolWithFunc{
 		capacity: int32(size),
 		poolFunc: pf,
-		lock:     internal.NewSpinLock(),
-		options:  opts,
+		//lock:     internal.NewSpinLock(),
+		lock:    NewSpinLock(),
+		options: opts,
 	}
 	p.workerCache.New = func() interface{} {
 		return &goWorkerWithFunc{

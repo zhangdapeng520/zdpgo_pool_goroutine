@@ -29,7 +29,7 @@ func main() {
 	)
 
 	// 初始化协程池
-	p, _ := zdpgo_pool_goroutine.NewPoolWithFunc(10, func(i interface{}) {
+	p, _ := zdpgo_pool_goroutine.NewPoolWithFunc(100, func(i interface{}) {
 		myFunc()
 		wg.Done()
 	})
